@@ -13,11 +13,12 @@ class SearchResult extends StatefulWidget {
 }
 
 class _SearchResult extends State<SearchResult> {
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
-        child: Text('SEARCH RESULT'),
+        child: Text(widget.title),
       ),
     );
   }
