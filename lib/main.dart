@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const MainPage(),
-        '/search_result': (context) => const SearchResult(title: 'asdf'),
+        '/search_result': (context) => const SearchResult(searchWord: ''),
         '/detail_info': (context) => const DetailInfo()
       },
     );
@@ -40,6 +40,13 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
 
+  searchGo(searchWord) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SearchResult(searchWord: searchWord))
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     print('Platform.isAndroid : ${Platform.isAndroid}');
@@ -51,6 +58,10 @@ class _MainPageState extends State<MainPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextField(
+              textInputAction: TextInputAction.go,
+              onSubmitted: (value) async {
+                searchGo(value);
+              },
               controller: searchControl,
               style: TextStyle(color: kDarkGreenColor),
               cursorColor: kDarkGreenColor,
@@ -86,11 +97,7 @@ class _MainPageState extends State<MainPage> {
               ),
               iconSize: 50,
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SearchResult(title: searchControl.value.text))
-                );
-                //Navigator.of(context).pushNamed('/search_result');
+                searchGo(searchControl.value.text);
               },
             ),
             Row(
@@ -127,8 +134,7 @@ class _MainPageState extends State<MainPage> {
                 itemBuilder: (context, index) {
                   return RecentlyViewedCard(
                     plantName: viewed[index].plantName,
-                    plantInfo: viewed[index].plantInfo,
-                    image: AssetImage(viewed[index].image),
+                    plantInfo: viewed[index].plantInfo
                   );
                 },
                 separatorBuilder: (context, index) {
@@ -147,31 +153,17 @@ class RecentlyViewedCard extends StatelessWidget {
   const RecentlyViewedCard({
     required this.plantName,
     required this.plantInfo,
-    required this.image,
     Key? key,
   }) : super(key: key);
 
   final String plantName;
   final String plantInfo;
-  final ImageProvider<Object> image;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: 60.0,
-          height: 60.0,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: image,
-            ),
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-        ),
-        const SizedBox(width: 24.0),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -198,7 +190,7 @@ class RecentlyViewedCard extends StatelessWidget {
 }
 
 List<ViewHistory> viewed = [
-  ViewHistory('Calathea', 'It\'s spines don\'t grow.', 'images/calathea.jpg'),
-  ViewHistory('Cactus', 'It has spines.', 'images/cactus.jpg'),
-  ViewHistory('Stephine', 'It\'s spines do grow.', 'images/stephine_2.jpg'),
+  ViewHistory('Calathea', 'It\'s spines don\'t grow.'),
+  ViewHistory('Cactus', 'It has spines.'),
+  ViewHistory('Stephine', 'It\'s spines do grow.'),
 ];
